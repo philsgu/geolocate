@@ -173,7 +173,7 @@ if not geo_df.empty:
      
         html = popup_html(i)
         folium.Marker(location=location, popup=html, tooltip=tooltip, icon=folium.Icon(color=color, icon='user', prefix='fa')).add_to(marker_cluster)
-
+    m.save("geo_applicants.html")
     folium_static(m, width=725)
     #use ste package avoid clear recent data analysis upon download 
     with open("geo_applicants.html", "rb") as file:
