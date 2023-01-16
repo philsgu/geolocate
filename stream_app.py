@@ -19,14 +19,13 @@ upload_file = st.file_uploader("Upload CSV file")
 expected_headers = ['Permanent Address']
 
 #FUNCTION TO GET COORDINATES FROM GOOGLE MAPS
-#Hide API using 
-#GOOGLE_API_KEY=st.secrets[token_name]
-GOOGLE_API_KEY="AIzaSyCFAHrsIxgPZyJ9T6105FvKaPrU0S_x-hs"
+
 
 st.cache()
 def extract_lat_long_via_address(address_or_zipcode):
     lat, lng = None, None
-    api_key = GOOGLE_API_KEY #change to st.secrets['name']
+    api_key = st.secrets['GOOGLE_API_KEY']
+    
     base_url = "https://maps.googleapis.com/maps/api/geocode/json"
     endpoint = f"{base_url}?address={address_or_zipcode}&key={api_key}"
     # see how our endpoint includes our API key? Yes this is yet another reason to restrict the key
