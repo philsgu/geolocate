@@ -177,7 +177,7 @@ if not geo_df.empty:
     folium_static(m, width=725)
     #use ste package avoid clear recent data analysis upon download 
     with open("geo_applicants.html", "rb") as file:
-        btn = ste.download_button(
+        btn = st.download_button(
             label="Download file as HTML file",
             data=file,
             file_name="geo_applicants.html",
