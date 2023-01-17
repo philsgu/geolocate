@@ -10,12 +10,12 @@ import streamlit_ext as ste
 
 stqdm.pandas()
 st.header("Geolocate Applicants")
-st.write("Upload raw CSV file from ERAS download to output view and output HTML file. Below is an example output.")
+st.write("Upload raw CSV file from ERAS download to output view and output HTML file. No data is saved on the server for privacy protection. Any resulting HTML file chosen to be saved locally will be at the program's discretion.")
 st.image("sample_geo.jpg")
 eras = "https://auth.aamc.org/account/#/login?gotoUrl=http:%2F%2Fpdws.aamc.org%2Feras-pdws-web%2F"
 
 st.markdown(f"### HOW TO INSTRUCTIONS\n1. Login into [PDWS ERAS]({eras})\n2. Select **Active Applicants**\n3. Select All top table column\n4. Action to perform on selected applicants: CSV Export\n5. Edit CSV Export\n6. Add a new export template\n7. Create a **CSV Export Name**\n8. Personal >> Select\n   - **AAMC ID (required)**\n   - **Applicant Name (required)**\n   - **Permanent Address (required)**\n9. Education >> Select\n   - **Medical School of Graduation (required)**\n    - **Medical School Country**\n   - **Medical School Degree Date of Graduation**\n10. Exams/Licsenses/Certifications >> Select\n    - **ALL COMLEX AND STEP SCORES**\n11. Select **Bulk Print Requests** AND save your Print Job Name to your computer")
-st.info("Please note: Any MISSING **Permanent Address** applicant data will produce an error message")
+st.info("Please note: Any MISSING **Permanent Address** in data file will be excluded.")
 
 upload_file = st.file_uploader("Upload CSV file")
 expected_headers = ['Permanent Address', 'Applicant Name', 'AAMC ID', 'Medical School of Graduation'] 
@@ -136,7 +136,14 @@ geo_df = pd.DataFrame()
 if upload_file is not None: 
     try:
         df = pd.read_csv(upload_file)
-        
+        total_count = len(df.index)
+        #print out missing permanent address
+        actual = int()
+        if any(df['Permanent Address'].isnull()):
+            st.warning("Following with MISSING Permanent Address will not be processed:")
+            st.dataframe(df[df['Permanent Address'].isnull()])
+            df = df.dropna(subset=['Permanent Address'])
+            actual = len(df['Permanent Address'])
         #auto assign NaN to missing optional_headers
         missing_headers = [i for i in optional_headers if i not in set(df.columns.tolist())]
         #create missing headers first then assign 
@@ -149,7 +156,8 @@ if upload_file is not None:
             df['Permanent Address'] = df['Permanent Address'].str.replace('#', '')
             if st.button("Analyze"):
                 with st.spinner("Performing Analysis and Creating Map Coordinates this may take a while..."):
-                    geo_df = df.progress_apply(enrich_with_geocoding_api, axis=1)                
+                    geo_df = df.progress_apply(enrich_with_geocoding_api, axis=1)  
+                    st.subheader(f"Mapped {actual}/{total_count} Applicants")              
         else:
             #looks if CVS data contains required headers
             set_diff = [x for x in expected_headers if x not in set(df.columns.tolist())]
