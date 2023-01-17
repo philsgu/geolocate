@@ -151,7 +151,7 @@ if upload_file is not None:
         else:
             #looks if CVS data contains required headers
             set_diff = [x for x in expected_headers if x not in set(df.columns.tolist())]
-            st.error(f"Required Missing column header name(s) are missing to process: {list(set_diff)}")
+            st.error(f"Required column header name(s) are missing to process: {list(set_diff)}")
     except:
         st.warning("😬 Something went wrong: NOT in CSV file format or has missing data")
 
