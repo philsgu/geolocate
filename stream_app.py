@@ -15,7 +15,7 @@ st.image("sample_geo.jpg")
 eras = "https://auth.aamc.org/account/#/login?gotoUrl=http:%2F%2Fpdws.aamc.org%2Feras-pdws-web%2F"
 
 st.markdown(f"### HOW TO INSTRUCTIONS\n1. Login into [PDWS ERAS]({eras})\n2. Select **Active Applicants**\n3. Select All top table column\n4. Action to perform on selected applicants: CSV Export\n5. Edit CSV Export\n6. Add a new export template\n7. Create a **CSV Export Name**\n8. Personal >> Select\n   - **AAMC ID (required)**\n   - **Applicant Name (required)**\n   - **Permanent Address (required)**\n9. Education >> Select\n   - **Medical School of Graduation (required)**\n    - **Medical School Country**\n   - **Medical School Degree Date of Graduation**\n10. Exams/Licsenses/Certifications >> Select\n    - **ALL COMLEX AND STEP SCORES**\n11. Select **Bulk Print Requests** AND save your Print Job Name to your computer")
-st.info("Please note: Any missing **Permanent Address** data will produce an error to process")
+st.info("Please note: Any MISSING **Permanent Address** applicant data will produce an error message")
 
 upload_file = st.file_uploader("Upload CSV file")
 expected_headers = ['Permanent Address', 'Applicant Name', 'AAMC ID', 'Medical School of Graduation'] 
