@@ -16,11 +16,10 @@ eras = "https://auth.aamc.org/account/#/login?gotoUrl=http:%2F%2Fpdws.aamc.org%2
 st.markdown(f"### HOW TO INSTRUCTIONS\n1. Login into [PDWS ERAS]({eras})\n2. Select **Active Applicants**\n3. Select All top table column\n4. Action to perform on selected applicants: CSV Export\n5. Edit CSV Export\n6. Add a new export template\n7. Create a **CSV Export Name**\n8. Personal >> Select\n   - **Applicant Name**\n   - **Permanent Address**\n9. Education >> Select\n   - **Medical School of Graduation**\n    - **Medical School Country**\n   - **Medical School Degree Date of Graduation**\n10. Exams/Licsenses/Certifications >> Select\n    - **ALL COMLEX AND STEP SCORES**\n11. Select **Bulk Print Requests** AND save your Print Job Name to your computer")
 
 upload_file = st.file_uploader("Upload CSV file")
-expected_headers = ['Permanent Address']
+expected_headers = ['Permanent Address', 'Applicant Name', 'AAMC ID', 'Medical School of Graduation'] 
+optional_headers = ['Medical School Country', 'Medical School Degree Date of Graduation', 'USMLE Step 1 Score', 'USMLE Step 2 CK Score', 'USMLE Step 2 CS Score', 'USMLE Step 3 Score', 'USMLE Step 3 Score', 'COMLEX-USA Level 1 Score', 'COMLEX-USA Level 2 CE Score', 'COMLEX-USA Level 2 PE Score', 'COMLEX-USA Level 3 Score']
 
 #FUNCTION TO GET COORDINATES FROM GOOGLE MAPS
-
-
 st.cache()
 def extract_lat_long_via_address(address_or_zipcode):
     lat, lng = None, None
@@ -131,23 +130,30 @@ def popup_html(row):
         """ 
     return html
 
-
 geo_df = pd.DataFrame()
 if upload_file is not None: 
     try:
         df = pd.read_csv(upload_file)
-        #df = df.truncate(after=10)
-        #clean up the address #
+        
+        #auto assign NaN to missing optional_headers
+        missing_headers = [i for i in optional_headers if i not in set(df.columns.tolist())]
+        #create missing headers first then assign 
+        if missing_headers:
+            df = df.reindex(columns=df.columns.tolist() + list(missing_headers))
+    
+        #clean up the address 
+        #perform data analysis to obtain geo coord
         if all(col in df.columns for col in expected_headers):
             df['Permanent Address'] = df['Permanent Address'].str.replace('#', '')
-            #print("All the expected columns are present.")
             if st.button("Analyze"):
                 with st.spinner("Performing Analysis and Creating Map Coordinates this may take a while..."):
                     geo_df = df.progress_apply(enrich_with_geocoding_api, axis=1)                
         else:
-            st.warning("Not all the expected columns are present.")
+            #looks if CVS data contains required headers
+            set_diff = [x for x in expected_headers if x not in set(df.columns.tolist())]
+            st.error(f"Required Missing column header name(s) are missing to process: {list(set_diff)}")
     except:
-        st.warning("NOT CSV format")
+        st.warning("😬 Something went wrong: NOT in CSV file format or has missing data")
 
 if not geo_df.empty:  
     m = folium.Map(location=geo_df[["lat", "lng"]].mean().to_list(), zoom_start=2)
