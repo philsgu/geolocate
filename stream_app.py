@@ -10,7 +10,9 @@ import streamlit_ext as ste
 
 stqdm.pandas()
 st.header("Geolocate Applicants")
+st.write("Last update: 1/17/23 [Phillip Kim, MD](https://www.doximity.com/pub/phillip-kim-md-8dccc4e4)")
 st.write("Upload raw CSV file from ERAS download to output view and output HTML file. No data is saved on the server for privacy protection. Any resulting HTML file chosen to be saved locally will be at the program's discretion.")
+
 st.image("sample_geo.jpg")
 eras = "https://auth.aamc.org/account/#/login?gotoUrl=http:%2F%2Fpdws.aamc.org%2Feras-pdws-web%2F"
 
