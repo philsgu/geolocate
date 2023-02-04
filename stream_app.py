@@ -159,7 +159,7 @@ if upload_file is not None:
             if st.button("Analyze"):
                 with st.spinner("Performing Analysis and Creating Map Coordinates this may take a while..."):
                     geo_df = df.progress_apply(enrich_with_geocoding_api, axis=1)  
-                    st.subheader(f"Mapped {actual}/{total_count} Applicants")              
+                    st.subheader(f"Mapped {total_count - actual}/{total_count} Applicants")              
         else:
             #looks if CVS data contains required headers
             set_diff = [x for x in expected_headers if x not in set(df.columns.tolist())]
