@@ -172,10 +172,8 @@ if upload_file is not None:
         st.warning("😬 Something went wrong: NOT in CSV file format or has missing data")
 
 if not geo_df.empty:
-    mask = geo_df['lng'].isna()
-
-    count_missing = mask.sum()
-    st.subheader(f"Mapped {df.shape[0]-count_missing}/{df.shape[0]} Applicants")
+   
+    st.subheader(f"Mapped {df.shape[0]-len(geo_df[geo_df['lng'].isnull()])}/{df.shape[0]} Applicants")
     if count_missing: 
         st.subheader("😟 Following applicant(s) were unable to get coordinates.  You can try to fix the permanent address format and re-upload CSV") 
         st.dataframe(geo_df[geo_df['lng'].isnull()])
@@ -183,8 +181,7 @@ if not geo_df.empty:
     geo_df = geo_df.dropna(subset=["lat"])
     geo_df = geo_df.reset_index(drop=True)
 
- 
-        
+
     m = folium.Map(location=geo_df[["lat", "lng"]].mean().to_list(), zoom_start=2)
 # if the points are too close to each other, cluster them, create a cluster overlay with MarkerCluster, add to m
     marker_cluster = MarkerCluster().add_to(m)
