@@ -141,6 +141,7 @@ geo_df = pd.DataFrame()
 if upload_file is not None: 
     try:
         df = pd.read_csv(upload_file)
+        total_count = df.shape[0]
         
         #total_count = len(df.index)
         #print out missing permanent address
@@ -173,7 +174,7 @@ if upload_file is not None:
 
 if not geo_df.empty:
     nan_count = geo_df['lng'].isna().sum()
-    st.subheader(f"Mapped {df.shape[0]- nan_count}/{df.shape[0]} Applicants")
+    st.subheader(f"Mapped {total_count-nan_count}/{total_count} Applicants")
     if nan_count: 
         st.subheader("😟 Following applicant(s) were unable to get coordinates.  You can try to fix the permanent address format and re-upload CSV") 
         st.dataframe(geo_df[geo_df['lng'].isnull()])
