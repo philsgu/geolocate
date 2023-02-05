@@ -173,7 +173,7 @@ if upload_file is not None:
 
 if not geo_df.empty:
     st.subheader(f"Mapped {df.shape[0]- len(geo_df[geo_df['lng'].isnull()])}/{df.shape[0]} Applicants")
-    if geo_df[geo_df['lng'].isnull()]: 
+    if geo_df['lng'].isnull(): 
         st.subheader("😟 Following applicant(s) were unable to get coordinates.  You can try to fix the permanent address format and re-upload CSV") 
         st.dataframe(geo_df[geo_df['lng'].isnull()])
   
