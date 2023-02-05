@@ -220,5 +220,6 @@ if not geo_df.empty:
             file_name="geo_applicants.html",
             mime='txt/html'
         )
+        st.write("Use a browser to open the downloaded HTML file offline")
 
 
