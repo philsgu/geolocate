@@ -99,11 +99,11 @@ def popup_html(row):
         </tr>
         <tr>
         <td style="background-color: """+ left_col_color +"""; padding: 5px"><span style="color: #ffffff;"> USMLE Step 1 </span></td>
-        <td style="width: 150px;background-color: """+ right_col_color +"""; padding: 5px">{:.0f}</td>""".format(step1_score) + """
+        <td style="width: 150px;background-color: """+ right_col_color +"""; padding: 5px">{}</td>""".format(step1_score) + """
         </tr>
         <tr>
         <td style="background-color: """+ left_col_color +"""; padding: 5px"><span style="color: #ffffff;"> USMLE Step 2 CK </span></td>
-        <td style="width: 150px;background-color: """+ right_col_color +"""; padding: 5px">{:.0f}</td>""".format(step2ck_score) + """
+        <td style="width: 150px;background-color: """+ right_col_color +"""; padding: 5px">{}</td>""".format(step2ck_score) + """
         </tr>
         <tr>
         <td style="background-color: """+ left_col_color +"""; padding: 5px"><span style="color: #ffffff;"> USMLE Step 2 CS </span></td>
@@ -111,15 +111,15 @@ def popup_html(row):
         </tr>
         <tr>
         <td style="background-color: """+ left_col_color +"""; padding: 5px"><span style="color: #ffffff;"> USMLE Step 3 </span></td>
-        <td style="width: 150px;background-color: """+ right_col_color +"""; padding: 5px">{:.0f}</td>""".format(step3_score) + """
+        <td style="width: 150px;background-color: """+ right_col_color +"""; padding: 5px">{}</td>""".format(step3_score) + """
         </tr>
         <tr>
         <td style="background-color: """+ left_col_color +"""; padding: 5px"><span style="color: #ffffff;"> COMLEX Level 1 </span></td>
-        <td style="width: 150px;background-color: """+ right_col_color +"""; padding: 5px">{:.0f}</td>""".format(comlex1_score) + """
+        <td style="width: 150px;background-color: """+ right_col_color +"""; padding: 5px">{}</td>""".format(comlex1_score) + """
         </tr>
         <tr>
         <td style="background-color: """+ left_col_color +"""; padding: 5px"><span style="color: #ffffff;"> COMLEX Level 2 CE </span></td>
-        <td style="width: 150px;background-color: """+ right_col_color +"""; padding: 5px">{:.0f}</td>""".format(comlex2ce_score) + """
+        <td style="width: 150px;background-color: """+ right_col_color +"""; padding: 5px">{}</td>""".format(comlex2ce_score) + """
         </tr>
         <tr>
         <td style="background-color: """+ left_col_color +"""; padding: 5px"><span style="color: #ffffff;"> COMLEX Level 2 PE </span></td>
@@ -127,7 +127,7 @@ def popup_html(row):
         </tr>
         <tr>
         <td style="background-color: """+ left_col_color +"""; padding: 5px"><span style="color: #ffffff;"> COMLEX Level 3 </span></td>
-        <td style="width: 150px;background-color: """+ right_col_color +"""; padding: 5px">{:.0f}</td>""".format(comlex3_score) + """
+        <td style="width: 150px;background-color: """+ right_col_color +"""; padding: 5px">{}</td>""".format(comlex3_score) + """
         </tr>
         </tbody>
         </table></center>
