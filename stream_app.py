@@ -7,10 +7,14 @@ import json
 from folium.plugins import MarkerCluster
 from stqdm import stqdm
 import streamlit_ext as ste
+from datetime import datetime
+
+today = datetime.now().date()
+formatted_date = today.strftime("%m/%d/%Y")
 
 stqdm.pandas()
 st.header("Geolocate Applicants")
-st.write("Last update: 1/17/23 [Phillip Kim, MD](https://www.doximity.com/pub/phillip-kim-md-8dccc4e4)")
+st.write(f"Last update: {formatted_date} [Phillip Kim, MD](https://www.doximity.com/pub/phillip-kim-md-8dccc4e4)")
 st.write("Upload raw CSV file from ERAS download to output view and output HTML file. No data is saved on the server for privacy protection. Any resulting HTML file chosen to be saved locally will be at the program's discretion.")
 
 st.image("sample_geo.jpg")
@@ -27,8 +31,8 @@ optional_headers = ['Medical School Country', 'Medical School Degree Date of Gra
 st.cache()
 def extract_lat_long_via_address(address_or_zipcode):
     lat, lng = None, None
-    api_key = st.secrets['GOOGLE_API_KEY']
-    
+    #api_key = st.secrets['GOOGLE_API_KEY']
+    api_key = "AIzaSyCFAHrsIxgPZyJ9T6105FvKaPrU0S_x-hs"
     base_url = "https://maps.googleapis.com/maps/api/geocode/json"
     endpoint = f"{base_url}?address={address_or_zipcode}&key={api_key}"
     # see how our endpoint includes our API key? Yes this is yet another reason to restrict the key
@@ -138,28 +142,29 @@ geo_df = pd.DataFrame()
 if upload_file is not None: 
     try:
         df = pd.read_csv(upload_file)
-        total_count = len(df.index)
+        
+        #total_count = len(df.index)
         #print out missing permanent address
-        actual = int()
         if any(df['Permanent Address'].isnull()):
             st.warning("Following with MISSING Permanent Address will not be processed:")
             st.dataframe(df[df['Permanent Address'].isnull()])
-            df = df.dropna(subset=['Permanent Address'])
-            actual = len(df['Permanent Address'])
+            #df = df.dropna(subset=['Permanent Address'])
         #auto assign NaN to missing optional_headers
         missing_headers = [i for i in optional_headers if i not in set(df.columns.tolist())]
         #create missing headers first then assign 
         if missing_headers:
-            df = df.reindex(columns=df.columns.tolist() + list(missing_headers))
+            df.reindex(columns=df.columns.tolist() + list(missing_headers))
     
         #clean up the address 
         #perform data analysis to obtain geo coord
         if all(col in df.columns for col in expected_headers):
+            
             df['Permanent Address'] = df['Permanent Address'].str.replace('#', '')
             if st.button("Analyze"):
+                df = df.dropna(subset=['Permanent Address'])
                 with st.spinner("Performing Analysis and Creating Map Coordinates this may take a while..."):
-                    geo_df = df.progress_apply(enrich_with_geocoding_api, axis=1)  
-                    st.subheader(f"Mapped {total_count - actual}/{total_count} Applicants")              
+                    geo_df = df.progress_apply(enrich_with_geocoding_api, axis=1)               
+          
         else:
             #looks if CVS data contains required headers
             set_diff = [x for x in expected_headers if x not in set(df.columns.tolist())]
@@ -167,12 +172,26 @@ if upload_file is not None:
     except:
         st.warning("😬 Something went wrong: NOT in CSV file format or has missing data")
 
-if not geo_df.empty:  
+if not geo_df.empty:
+    mask = geo_df['lng'].isna()
+
+    count_missing = mask.sum()
+    st.subheader(f"Mapped {df.shape[0]-count_missing}/{df.shape[0]} Applicants")
+    if count_missing: 
+        st.subheader("😟 Following applicant(s) were unable to get coordinates.  You can try to fix the permanent address format and re-upload CSV") 
+        st.dataframe(geo_df[geo_df['lng'].isnull()])
+  
+    geo_df = geo_df.dropna(subset=["lat"])
+    geo_df = geo_df.reset_index(drop=True)
+
+ 
+        
     m = folium.Map(location=geo_df[["lat", "lng"]].mean().to_list(), zoom_start=2)
-    # if the points are too close to each other, cluster them, create a cluster overlay with MarkerCluster, add to m
+# if the points are too close to each other, cluster them, create a cluster overlay with MarkerCluster, add to m
     marker_cluster = MarkerCluster().add_to(m)
     # draw the markers and assign popup and hover texts
     # add the markers the the cluster layers so that they are automatically clustered
+
     for i,r in geo_df.iterrows():
         location = (r["lat"], r["lng"])
         #id foreign, US, DO
@@ -188,9 +207,11 @@ if not geo_df.empty:
         else:
             color = 'gray'
             tooltip = 'MD-IMG-Grad'
-     
+    
         html = popup_html(i)
         folium.Marker(location=location, popup=html, tooltip=tooltip, icon=folium.Icon(color=color, icon='user', prefix='fa')).add_to(marker_cluster)
+
+
     m.save("geo_applicants.html")
     folium_static(m, width=725)
     #use ste package avoid clear recent data analysis upon download 
@@ -201,3 +222,5 @@ if not geo_df.empty:
             file_name="geo_applicants.html",
             mime='txt/html'
         )
+
+
