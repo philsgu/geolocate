@@ -13,7 +13,7 @@ today = datetime.now().date()
 formatted_date = today.strftime("%m/%d/%Y")
 
 stqdm.pandas()
-st.header("Geolocate Applicants")
+st.header("Geolocate ERAS Applicants")
 st.write(f"Last update: {formatted_date} [Phillip Kim, MD, MPH](https://www.doximity.com/pub/phillip-kim-md-8dccc4e4)")
 st.write("Upload raw CSV file from ERAS download to view map and output to HTML file. No data is saved on the server for privacy protection. Any resulting HTML file chosen to be saved locally will be at the program's discretion.")
 
