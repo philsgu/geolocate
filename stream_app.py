@@ -20,7 +20,7 @@ st.write("Upload raw CSV file from ERAS download to view map and output to HTML 
 st.image("sample_geo.jpg")
 eras = "https://auth.aamc.org/account/#/login?gotoUrl=http:%2F%2Fpdws.aamc.org%2Feras-pdws-web%2F"
 
-tab1, tab2 = st.tabs(['Step 1', 'Step 2'])
+tab1, tab2, tab3 = st.tabs(['🗂️ Step 1', '🗺️ Step 2', '📷 Step 3'])
 with tab1:
     markdown_text = f"""
     # 2023 ERAS Website Updates
@@ -67,6 +67,8 @@ with tab1:
     st.info("Please note: Any MISSING **Permanent Address** in data file will be excluded.")
 
 with tab2:
+    check_image = st.checkbox ("Chere here to insert applicant profile image (MUST Complete Step 3)")
+ 
     st.write("Please locate and select downloaded CSV file for processing")
     upload_file = st.file_uploader("Upload CSV file")
     expected_headers = ['Permanent Address', 'Applicant Name', 'AAMC ID', 'Medical School of Graduation', 'Medical School Type'] 
@@ -105,6 +107,12 @@ with tab2:
         applicant_name=df['Applicant Name'].iloc[i]
         aamc_id=df['AAMC ID'].iloc[i]
 
+        if check_image:
+            applicant_img = f"{aamc_id}.jpg"
+            image_html = f'<center><img src={applicant_img} alt="logo" width=100 height=100 ></center>'
+        else:
+            image_html = f'<center></center>'
+
         medschool_name = df['Medical School of Graduation'].iloc[i]
         medschool_type = df['Medical School Type'].iloc[i]
         medschool_location =df['Medical School Country'].iloc[i]
@@ -130,6 +138,7 @@ with tab2:
         html = f"""
             <!DOCTYPE html>
             <html>
+            {image_html}
             <center><h4 style="margin-bottom:5"; width="200px">{applicant_name}</h4></center>
 
             <center> <table style="height: 126px; width: 305px;">
