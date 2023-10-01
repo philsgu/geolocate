@@ -57,7 +57,8 @@ with tab1:
     8. Select all from top box (may need to repeat for each page)
     9. Select Actions then choose CSV Export
     10. Select the saved CSV Template to run the data extraction
-    11. Save to your local drive then move to Step 2 
+    11. Select Bulk Print Request to find your recent CSV template  
+    12. Save to your local drive then move to Step 2 
     """
 
     st.markdown(markdown_text)
