@@ -125,7 +125,7 @@ with tab2:
         left_col_color = "#3e95b5"
         right_col_color = "#f2f9ff"
 
-        html = """
+        html = f"""
             <!DOCTYPE html>
             <html>
             <center><h4 style="margin-bottom:5"; width="200px">{applicant_name}</h4></center>
