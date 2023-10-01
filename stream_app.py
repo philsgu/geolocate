@@ -53,6 +53,11 @@ with tab1:
         - USMLE Step 2 CS Score
     - **Geographic Presence**
         - Division Preference
+    7. Back to Applications and select Current Results
+    8. Select all from top box (may need to repeat for each page)
+    9. Select Actions then choose CSV Export
+    10. Select the saved CSV Template to run the data extraction
+    11. Save to your local drive then move to Step 2 
     """
 
     st.markdown(markdown_text)
