@@ -121,6 +121,8 @@ with tab2:
         comlex2ce_score = df['COMLEX-USA Level 2 CE Score'].iloc[i]
         comlex2pe_score = df['COMLEX-USA Level 2 PE Score'].iloc[i]
         comlex3_score = df['COMLEX-USA Level 3 Score'].iloc[i]
+
+        div_pref = df['Division_Preference'].iloc[i]
         
         left_col_color = "#3e95b5"
         right_col_color = "#f2f9ff"
