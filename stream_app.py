@@ -34,8 +34,7 @@ with tab1:
     5. Enter a filename for the CVS Export Name.
     6. **PLEASE DRAG OR SELECT THE FOLLOWING DATA CATEGORIES AND DATA TYPES TO EXPORT:**
     - **Personal**
-        - Last Name
-        - First Name
+        - Applicant Name
         - Permanent Address
     - **Education**
         - Medical School of Graduation
