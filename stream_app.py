@@ -9,8 +9,14 @@ from stqdm import stqdm
 import streamlit_ext as ste
 from datetime import datetime
 
+from PyPDF2 import PdfReader
+from io import BytesIO
+from PIL import Image
+import zipfile
+
+
 today = datetime.now().date()
-formatted_date = today.strftime("%m/%d/%Y")
+formatted_date = '10/2/23'
 
 stqdm.pandas()
 st.header("Geolocate ERAS Applicants")
@@ -288,4 +294,71 @@ with tab2:
             )
             st.write("Use a browser to open the downloaded HTML file for offline viewing")
 
+#####PROCESS PDF TO JPEG#####
+with tab3:
+    # Create a Streamlit app
+    st.title("Applicant Photo PDF to Image Converter")
+    st.markdown("""
+    1. Login into AAMC PDWS
+    2. Go to Applications, click Active Applicants
+    3. Click all or selected applicants checkbox 
+    4. Click ACTIONS (100 APPLICANTS) 
+    5. Click View/Print Application
+    6. Name Print Job Name e.g. Photos1, Photos2…
+    7. Select **Photograph** In Documents 
+    8. Check Bulk Print (may be delayed, so check back later for complete status)
+    9. Download to your local drive
+    10. Unzip the folder 
+    11. USE BELOW TO UPLOAD selected PDFs to process into JPEGs
+    12. Download the Zip folder 
+    13. Unzip the folder to get all processed JPEGs
+    14. Move your downloaded geo_applicants.html in Step 2 into the processed JPEGs 
+    15. Open the geo_applicants.html file in a web-browser
+    """)
+    st.error("Please do NOT modify any file names upon download as this will impact the profile images in HTML")
+    # Upload multiple PDFs
+    uploaded_files = st.file_uploader("Upload multiple PDFs", type=["pdf"], accept_multiple_files=True)
+
+    if uploaded_files:
+        # Add a processing spinner
+        with st.spinner("Converting PDFs to images..."):
+
+            image_list = []
+
+            # Create a BytesIO object to store the ZIP file
+            zip_buffer = BytesIO()
+
+            # Extract images from PDFs and save as JPGs in memory (BytesIO)
+            for pdf_file in uploaded_files:
+                pdf_file_name = pdf_file.name.split("_")[1]
+                pdf_reader = PdfReader(pdf_file)
+                num_pages = len(pdf_reader.pages)
+
+                for page_num in range(num_pages):
+                    page = pdf_reader.pages[page_num]
+                    xObject = page['/Resources']['/XObject'].get_object()
+                    
+                    for obj in xObject:
+                        if xObject[obj]['/Subtype'] == '/Image':
+                            img = xObject[obj]
+                            img_data = img.get_data()
+                            img_bytes = BytesIO(img_data)
+                            img_pil = Image.open(img_bytes)
+                            
+                            # Save the image as a BytesIO object
+                            img_io = BytesIO()
+                            img_pil.save(img_io, 'JPEG')
+                            image_list.append((f"{pdf_file_name}.jpg", img_io))
+
+            # Create a ZIP file in memory
+            with zipfile.ZipFile(zip_buffer, "w") as zipf:
+                for img_name, img_io in image_list:
+                    img_io.seek(0)
+                    zipf.writestr(img_name, img_io.read())
+
+            st.success("Images converted and zipped successfully!")
+
+            # Provide a link to download the ZIP file
+            st.markdown("### Download ZIP file")
+            st.download_button("Click here to download ZIP", data=zip_buffer, file_name="converted_images.zip", key="download_btn")
 
