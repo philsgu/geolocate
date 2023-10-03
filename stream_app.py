@@ -22,7 +22,7 @@ stqdm.pandas()
 st.header("Geolocate ERAS Applicants")
 st.write(f"Last update: {formatted_date} [Phillip Kim, MD, MPH](https://www.doximity.com/pub/phillip-kim-md-8dccc4e4)")
 st.write("Upload raw CSV file from ERAS download to view map and output to HTML file. No data is saved on the server for privacy protection. Any resulting HTML file chosen to be saved locally will be at the program's discretion.")
-
+st.write("🛠️ Check out other tools-[Extract PDF Board Scores and FAILED attempts](https://extractscores.streamlit.app/)")
 st.image("sample_geo.jpg")
 eras = "https://auth.aamc.org/account/#/login?gotoUrl=http:%2F%2Fpdws.aamc.org%2Feras-pdws-web%2F"
 
