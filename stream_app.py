@@ -320,7 +320,7 @@ with tab3:
     uploaded_files = st.file_uploader("Upload multiple PDFs", type=["pdf"], accept_multiple_files=True)
     
     if uploaded_files:
-       # Add a processing spinner
+        # Add a processing spinner
         with st.spinner("Converting PDFs to images..."):
 
             image_list = []
@@ -328,57 +328,64 @@ with tab3:
             # Create a BytesIO object to store the ZIP file
             zip_buffer = BytesIO()
 
-             # Extract images from PDFs and save as JPGs in memory (BytesIO)
-        for pdf_file in uploaded_files:
-            st.write(f"Processing file: {pdf_file.name}")  # Debug log
+            # Extract images from PDFs and save as JPGs in memory (BytesIO)
+            for pdf_file in uploaded_files:
+                #st.write(f"Processing file: {pdf_file.name}")  # Debug log
 
-            pdf_file_name = pdf_file.name.split("_")[1]  # Get the name part from filename
-            pdf_reader = PdfReader(pdf_file)
-            num_pages = len(pdf_reader.pages)
-            st.write(f"Number of pages in {pdf_file.name}: {num_pages}")  # Debug log
+                pdf_file_name = pdf_file.name.split("_")[1]  # Get the name part from filename
+                pdf_reader = PdfReader(pdf_file)
+                num_pages = len(pdf_reader.pages)
+                #st.write(f"Number of pages in {pdf_file.name}: {num_pages}")  # Debug log
 
-            for page_num in range(num_pages):
-                page = pdf_reader.pages[page_num]
-                st.write(f"Processing page {page_num + 1} of {pdf_file.name}")  # Debug log
+                for page_num in range(num_pages):
+                    page = pdf_reader.pages[page_num]
+                    #st.write(f"Processing page {page_num + 1} of {pdf_file.name}")  # Debug log
 
-                try:
-                    xObject = page['/Resources']['/XObject'].get_object()
-                    st.write(f"Found XObject on page {page_num + 1} of {pdf_file.name}")  # Debug log
+                    try:
+                        xObject = page['/Resources']['/XObject'].get_object()
+                        #st.write(f"Found XObject on page {page_num + 1} of {pdf_file.name}")  # Debug log
 
-                    for obj in xObject:
-                        if xObject[obj]['/Subtype'] == '/Image':
-                            img = xObject[obj]
-                            img_data = img.get_data()
-                            img_bytes = BytesIO(img_data)
+                        for obj in xObject:
+                            if xObject[obj]['/Subtype'] == '/Image':
+                                img = xObject[obj]
+                                try:
+                                    img_data = img.get_data()
+                                    img_bytes = BytesIO(img_data)
 
-                            try:
-                                img_pil = Image.open(img_bytes)
-                                #st.write(f"Image extracted from page {page_num + 1} of {pdf_file.name}")  # Debug log
-                                
-                                # Save the image as a BytesIO object
-                                img_io = BytesIO()
-                                img_pil.save(img_io, 'JPEG')
-                                image_list.append((f"{pdf_file_name}_page{page_num+1}.jpg", img_io))
+                                    # Perform a quick validation: Ensure the data is in a supported format.
+                                    if img_bytes.getbuffer().nbytes > 0:
+                                        try:
+                                            # Try to open the image
+                                            img_pil = Image.open(img_bytes)
+                                            #st.write(f"Image extracted from page {page_num + 1} of {pdf_file.name}")  # Debug log
+                                            
+                                            # Save the image as a BytesIO object
+                                            img_io = BytesIO()
+                                            img_pil.save(img_io, 'JPEG')
+                                            image_list.append((f"{pdf_file_name}_page{page_num+1}.jpg", img_io))
+                                        except UnidentifiedImageError:
+                                            st.error(f"Invalid image data from file: {pdf_file.name}, page: {page_num + 1}")
+                                    else:
+                                        st.error(f"Empty image data in file: {pdf_file.name}, page: {page_num + 1}")
+                                except (UnidentifiedImageError, Exception) as e:  # Catch generic errors
+                                    st.error(f"Error processing image from file: {pdf_file.name}, page: {page_num + 1} - {str(e)}")
+                                    continue  # Skip this image and move to the next
+                    except KeyError:
+                        # If there are no images in the page, skip it
+                        st.warning(f"No images found in file: {pdf_file.name}, page: {page_num + 1}")
+                        continue
 
-                            except (UnidentifiedImageError, Exception) as e:
-                                st.error(f"Error processing image from file: {pdf_file.name}, page: {page_num + 1} - {str(e)}")
-                                continue  # Skip this image and move to the next
-                except KeyError:
-                    # If there are no images in the page, skip it
-                    st.warning(f"No images found in file: {pdf_file.name}, page: {page_num + 1}")
-                    continue
+            # Create a ZIP file in memory
+            if image_list:
+                with zipfile.ZipFile(zip_buffer, "w") as zipf:
+                    for img_name, img_io in image_list:
+                        img_io.seek(0)
+                        zipf.writestr(img_name, img_io.read())
 
-        # Create a ZIP file in memory
-        if image_list:
-            with zipfile.ZipFile(zip_buffer, "w") as zipf:
-                for img_name, img_io in image_list:
-                    img_io.seek(0)
-                    zipf.writestr(img_name, img_io.read())
+                st.success("Images converted and zipped successfully!")
 
-            st.success("Images converted and zipped successfully!")
-
-            # Provide a link to download the ZIP file
-            st.markdown("### Download ZIP file")
-            st.download_button("Click here to download ZIP", data=zip_buffer.getvalue(), file_name="converted_images.zip", key="download_btn")
-        else:
-            st.warning("No images were found or processed from the uploaded PDFs.")
+                # Provide a link to download the ZIP file
+                st.markdown("### Download ZIP file")
+                st.download_button("Click here to download ZIP", data=zip_buffer.getvalue(), file_name="converted_images.zip", key="download_btn")
+            else:
+                st.warning("No images were found or processed from the uploaded PDFs.")
