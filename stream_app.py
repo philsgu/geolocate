@@ -9,7 +9,7 @@ from stqdm import stqdm
 import streamlit_ext as ste
 from datetime import datetime
 
-from PyPDF2 import PdfReader
+from PyPDF2 import PdfReader, PdfReadError
 from io import BytesIO
 from PIL import Image, UnidentifiedImageError
 import zipfile
@@ -353,15 +353,15 @@ with tab3:
 
                             try:
                                 img_pil = Image.open(img_bytes)
-                                st.write(f"Image extracted from page {page_num + 1} of {pdf_file.name}")  # Debug log
+                                #st.write(f"Image extracted from page {page_num + 1} of {pdf_file.name}")  # Debug log
                                 
                                 # Save the image as a BytesIO object
                                 img_io = BytesIO()
                                 img_pil.save(img_io, 'JPEG')
                                 image_list.append((f"{pdf_file_name}_page{page_num+1}.jpg", img_io))
 
-                            except UnidentifiedImageError:
-                                st.error(f"Error processing image from file: {pdf_file.name}, page: {page_num + 1}")
+                            except (UnidentifiedImageError, PdfReadError) as e:
+                                st.error(f"Error processing image from file: {pdf_file.name}, page: {page_num + 1} - {str(e)}")
                                 continue  # Skip this image and move to the next
                 except KeyError:
                     # If there are no images in the page, skip it
