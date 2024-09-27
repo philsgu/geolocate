@@ -362,7 +362,7 @@ with tab3:
                                             # Save the image as a BytesIO object
                                             img_io = BytesIO()
                                             img_pil.save(img_io, 'JPEG')
-                                            image_list.append((f"{pdf_file_name}_page{page_num+1}.jpg", img_io))
+                                            image_list.append((f"{pdf_file_name}.jpg", img_io))
                                         except UnidentifiedImageError:
                                             st.error(f"Invalid image data from file: {pdf_file.name}, page: {page_num + 1}")
                                     else:
