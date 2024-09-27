@@ -9,7 +9,7 @@ from stqdm import stqdm
 import streamlit_ext as ste
 from datetime import datetime
 
-from PyPDF2 import PdfReader, PdfReadError
+from PyPDF2 import PdfReader
 from io import BytesIO
 from PIL import Image, UnidentifiedImageError
 import zipfile
@@ -360,7 +360,7 @@ with tab3:
                                 img_pil.save(img_io, 'JPEG')
                                 image_list.append((f"{pdf_file_name}_page{page_num+1}.jpg", img_io))
 
-                            except (UnidentifiedImageError, PdfReadError) as e:
+                            except (UnidentifiedImageError, Exception) as e:
                                 st.error(f"Error processing image from file: {pdf_file.name}, page: {page_num + 1} - {str(e)}")
                                 continue  # Skip this image and move to the next
                 except KeyError:
