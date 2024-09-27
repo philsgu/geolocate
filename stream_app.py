@@ -318,8 +318,8 @@ with tab3:
     st.error("Please do NOT modify any file names upon download as this will impact the profile images in HTML")
     # Upload multiple PDFs
     uploaded_files = st.file_uploader("Upload multiple PDFs", type=["pdf"], accept_multiple_files=True)
-
-   if uploaded_files:
+    
+    if uploaded_files is not None:
         # Add a processing spinner
         with st.spinner("Converting PDFs to images..."):
     
