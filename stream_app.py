@@ -315,7 +315,7 @@ with tab3:
     14. Move your downloaded **geo_applicants.html** in Step 2 into the processed JPEGs folder
     15. Open the geo_applicants.html file in a web-browser to view and interact applicant data
     """)
-    st.error("Please do NOT modify any file names upon download as this will impact the profile images in HTML")
+    st.info("Please do NOT modify any file names upon download as this will impact the profile images in HTML")
     # Upload multiple PDFs
     uploaded_files = st.file_uploader("Upload multiple PDFs", type=["pdf"], accept_multiple_files=True)
     
