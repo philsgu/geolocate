@@ -75,7 +75,7 @@ with tab1:
 with tab2:
     check_image = st.checkbox ("Chere here to insert applicant profile image (MUST Complete Step 3)")
  
-    st.write("Please locate and select downloaded CSV file for processing")
+    st.write("Please locate and select downloaded CSV file for processing.  Once completed, please download the html file before moving to Step 3")
     upload_file = st.file_uploader("Upload CSV file")
     expected_headers = ['Permanent Address', 'Applicant Name', 'AAMC ID', 'Medical School of Graduation', 'Medical School Type'] 
     optional_headers = ['Medical School Country', 'Medical School Degree Date of Graduation', 'USMLE Step 1 Status','USMLE Step 1 Score', 'USMLE Step 2 CK Score', 'USMLE Step 2 CS Score', 'USMLE Step 3 Score', 'USMLE Step 3 Score','COMLEX-USA Level 1 Status', 'COMLEX-USA Level 1 Score', 'COMLEX-USA Level 2 CE Score', 'COMLEX-USA Level 2 PE Score', 'COMLEX-USA Level 3 Score', 'Division_Preference']
