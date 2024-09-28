@@ -312,8 +312,8 @@ with tab3:
     11. USE BELOW TO UPLOAD selected PDFs to process into JPEGs
     12. Download the Zip folder 
     13. Unzip the folder to get all processed JPEGs
-    14. Move your downloaded geo_applicants.html in Step 2 into the processed JPEGs 
-    15. Open the geo_applicants.html file in a web-browser
+    14. Move your downloaded **geo_applicants.html** in Step 2 into the processed JPEGs folder
+    15. Open the geo_applicants.html file in a web-browser to view and interact applicant data
     """)
     st.error("Please do NOT modify any file names upon download as this will impact the profile images in HTML")
     # Upload multiple PDFs
