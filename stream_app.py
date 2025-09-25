@@ -17,7 +17,7 @@ from functools import lru_cache
 
 
 today = datetime.now().date()
-formatted_date = "10/2/23"
+formatted_date = "9/23/25"
 
 stqdm.pandas()
 st.header("Geolocate ERAS Applicants")
