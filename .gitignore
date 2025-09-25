@@ -1,0 +1,14 @@
+# Secrets
+.streamlit/
+.streamlit/secrets.toml
+
+# Virtual env
+.venv/
+
+# Local artifacts
+geo_applicants.html
+*.csv
+
+# OS/editor
+.DS_Store
+.vscode/
